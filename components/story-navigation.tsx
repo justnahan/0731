@@ -3,10 +3,18 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Book, ShoppingCart, Heart, Search, Home, Library } from 'lucide-react'
+import { Book, ShoppingCart, Heart, Search, Home, Library, LucideIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Route } from 'next'
 
-const navigationItems = [
+interface NavigationItem {
+  href: Route
+  label: string
+  icon: LucideIcon
+  description: string
+}
+
+const navigationItems: NavigationItem[] = [
   { href: '/', label: '首頁', icon: Home, description: '回到故事起點' },
   { href: '/stories', label: '故事世界', icon: Library, description: '探索不同的故事類型' },
   { href: '/products', label: '商品目錄', icon: Book, description: '瀏覽所有商品故事' },
