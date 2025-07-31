@@ -457,29 +457,16 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
                     onClick={handleEmotionalAddToCart}
                     disabled={showAddToCartAnimation}
                   >
-                    {showAddToCartAnimation ? (
-                      <>
-                        <Sparkles className="h-5 w-5 mr-3 animate-spin" />
-                        讓這個故事成為我的一部分...
-                        <Crown className="h-5 w-5 ml-3 animate-bounce" />
-                      </>
-                    ) : (
-                      <>
-                        <Heart className="h-5 w-5 mr-3" />
-                        讓這個故事成為我的一部分
-                        <Gem className="h-5 w-5 ml-3" />
-                      </>
-                    )}
                   </MagicalButton>
                   
                   <div className="grid grid-cols-2 gap-3">
                     <MagicalButton variant="secondary" className="flex-1">
                       <Heart className="h-4 w-4 mr-2" />
-                      珍藏
+                      收藏這份美好
                     </MagicalButton>
                     <MagicalButton variant="secondary" className="flex-1">
                       <Share2 className="h-4 w-4 mr-2" />
-                      分享故事
+                      推薦給朋友
                     </MagicalButton>
                   </div>
                 </div>
