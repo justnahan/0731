@@ -5,7 +5,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MagicalButton, TypewriterText, ScrollProgress, StarBurstEffect, FloatingParticles } from '@/components/magical-effects'
+import { MagicalButton, TypewriterText, ScrollProgress, StarBurstEffect, FloatingParticles, ImmersiveBackground, ParticleTrail, CircularProgress, FeatherWritingEffect } from '@/components/magical-effects'
+import { StoryAudioSystem, useStoryAudio } from '@/components/story-audio-system'
+import { StoryDrivenCart, addProductToStoryCart } from '@/components/story-driven-cart'
 import { ArrowLeft, Heart, ShoppingCart, Star, Clock, BookOpen, Share2, Maximize, Minimize, Volume2, VolumeX, Sparkles, Crown, Gem } from 'lucide-react'
 
 interface Product {
@@ -127,7 +129,12 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
   const [readingProgress, setReadingProgress] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(false)
   const [showStarBurst, setShowStarBurst] = useState(false)
+  const [isLoadingStory, setIsLoadingStory] = useState(false)
+  const [particleTrailActive, setParticleTrailActive] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [showAddToCartAnimation, setShowAddToCartAnimation] = useState(false)
   const story = getFullStory(product.id, product.name)
+  const { playTyping, playPageTurn } = useStoryAudio()
 
   useEffect(() => {
     if (isFullscreen) {
@@ -147,24 +154,75 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
   }, [currentChapter, story.chapters.length])
 
   const handleChapterChange = (newChapter: number) => {
-    setCurrentChapter(newChapter)
-    setIsTypewriterMode(true)
-    setTimeout(() => setIsTypewriterMode(false), 3000)
+    setIsLoadingStory(true)
+    setParticleTrailActive(true)
     
-    // 完成故事時顯示星星爆炸效果
-    if (newChapter === story.chapters.length - 1) {
-      setShowStarBurst(true)
-      setTimeout(() => setShowStarBurst(false), 2000)
+    // 播放翻頁音效
+    if (soundEnabled) {
+      playPageTurn()
     }
+    
+    setTimeout(() => {
+      setCurrentChapter(newChapter)
+      setIsTypewriterMode(true)
+      setIsLoadingStory(false)
+      
+      // 激活粒子軌跡效果
+      setTimeout(() => {
+        setParticleTrailActive(false)
+      }, 1000)
+      
+      // 打字機效果結束
+      setTimeout(() => setIsTypewriterMode(false), 3000)
+      
+      // 完成故事時顯示星星爆炸效果
+      if (newChapter === story.chapters.length - 1) {
+        setShowStarBurst(true)
+        setTimeout(() => setShowStarBurst(false), 2000)
+      }
+    }, 500)
+  }
+
+  // 情感化加入購物車處理
+  const handleEmotionalAddToCart = () => {
+    setShowAddToCartAnimation(true)
+    setParticleTrailActive(true)
+    
+    // 播放特殊音效
+    if (soundEnabled) {
+      playTyping()
+    }
+    
+    // 添加到購物車
+    addProductToStoryCart(product)
+    
+    setTimeout(() => {
+      setShowAddToCartAnimation(false)
+      setParticleTrailActive(false)
+      setIsCartOpen(true)
+    }, 1500)
   }
 
   // 全屏沉浸式故事閱讀模式
   if (isFullscreen) {
     return (
-      <div className="fixed inset-0 z-50 bg-gradient-to-b from-amber-900 via-amber-800 to-amber-900 overflow-y-auto">
-        {/* 背景效果 */}
-        <div className="absolute inset-0 texture-paper opacity-10" />
-        <FloatingParticles count={20} />
+      <ImmersiveBackground storyCategory={story.category}>
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          {/* 音頻系統 */}
+          <StoryAudioSystem 
+            isEnabled={soundEnabled}
+            storyCategory={story.category}
+            isReading={true}
+            currentChapter={currentChapter}
+          />
+          
+          {/* 粒子軌跡效果 */}
+          <ParticleTrail 
+            isActive={particleTrailActive}
+            particleType={story.emoji}
+          />
+          
+          <FloatingParticles count={30} />
         
         {/* 頂部控制欄 */}
         <div className="sticky top-0 z-10 bg-amber-900/80 backdrop-blur-sm border-b border-amber-600/30">
@@ -191,9 +249,17 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
                   variant="secondary"
                   size="sm"
                   onClick={() => setSoundEnabled(!soundEnabled)}
+                  glowing={soundEnabled}
                 >
                   {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                 </MagicalButton>
+                
+                {/* 環形進度指示器 */}
+                <CircularProgress 
+                  progress={readingProgress}
+                  size={40}
+                  className="text-amber-300"
+                />
                 
                 <div className="text-amber-100 text-sm">
                   第 {currentChapter + 1} / {story.chapters.length} 章
@@ -220,20 +286,32 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
                 {story.chapters[currentChapter].title}
               </h2>
               
-              {/* 故事內容 - 打字機效果 */}
-              <div className="text-lg md:text-xl text-amber-800 leading-relaxed font-serif space-y-6">
-                {isTypewriterMode ? (
-                  <TypewriterText 
-                    text={story.chapters[currentChapter].content}
-                    speed={30}
-                    className="whitespace-pre-line"
-                  />
-                ) : (
-                  <div className="whitespace-pre-line">
-                    {story.chapters[currentChapter].content}
+              {/* 故事載入動畫 */}
+              {isLoadingStory && (
+                <div className="flex items-center justify-center py-12">
+                  <FeatherWritingEffect isWriting={true} className="text-4xl mr-4" />
+                  <div className="text-xl text-amber-700 font-serif animate-pulse">
+                    故事準備中...
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+              
+              {/* 故事內容 - 打字機效果 */}
+              {!isLoadingStory && (
+                <div className="text-lg md:text-xl text-amber-800 leading-relaxed font-serif space-y-6">
+                  {isTypewriterMode ? (
+                    <TypewriterText 
+                      text={story.chapters[currentChapter].content}
+                      speed={30}
+                      className="whitespace-pre-line"
+                    />
+                  ) : (
+                    <div className="whitespace-pre-line">
+                      {story.chapters[currentChapter].content}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           
@@ -274,9 +352,10 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
           </div>
         </div>
         
-        {/* 星星爆炸效果 */}
-        <StarBurstEffect trigger={showStarBurst} />
-      </div>
+          {/* 星星爆炸效果 */}
+          <StarBurstEffect trigger={showStarBurst} />
+        </div>
+      </ImmersiveBackground>
     )
   }
 
@@ -372,13 +451,12 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
                   <MagicalButton
                     variant="primary"
                     size="lg"
-                    glowing={true}
-                    breathing={true}
+                    glowing={!showAddToCartAnimation}
+                    breathing={!showAddToCartAnimation}
                     className="w-full"
+                    onClick={handleEmotionalAddToCart}
+                    disabled={showAddToCartAnimation}
                   >
-                    <ShoppingCart className="h-5 w-5 mr-3" />
-                    讓這個故事成為我的一部分
-                    <Gem className="h-5 w-5 ml-3" />
                   </MagicalButton>
                   
                   <div className="grid grid-cols-2 gap-3">
@@ -546,6 +624,18 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
         
         {/* 星星爆炸效果 */}
         <StarBurstEffect trigger={showStarBurst} />
+        
+        {/* 粒子軌跡效果（用於加入購物車動畫） */}
+        <ParticleTrail 
+          isActive={particleTrailActive}
+          particleType={story.emoji}
+        />
+        
+        {/* 故事驅動購物車 */}
+        <StoryDrivenCart 
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+        />
       </div>
     </div>
   )
