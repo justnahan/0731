@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Heart, ShoppingCart, Star, Clock, BookOpen, Share2 } from 'lucide-react'
+import { MagicalButton, TypewriterText, ScrollProgress, StarBurstEffect, FloatingParticles } from '@/components/magical-effects'
+import { ArrowLeft, Heart, ShoppingCart, Star, Clock, BookOpen, Share2, Maximize, Minimize, Volume2, VolumeX, Sparkles, Crown, Gem } from 'lucide-react'
 
 interface Product {
   id: number
@@ -122,157 +122,431 @@ const formatPrice = (cents: number) => {
 
 export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
   const [currentChapter, setCurrentChapter] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isTypewriterMode, setIsTypewriterMode] = useState(false)
+  const [readingProgress, setReadingProgress] = useState(0)
+  const [soundEnabled, setSoundEnabled] = useState(false)
+  const [showStarBurst, setShowStarBurst] = useState(false)
   const story = getFullStory(product.id, product.name)
 
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* 返回按鈕 */}
-      <div className="mb-6">
-        <Link href="/products">
-          <Button variant="ghost" className="text-amber-700 hover:text-amber-900">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            返回商品目錄
-          </Button>
-        </Link>
-      </div>
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isFullscreen])
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* 左側：商品圖片和基本信息 */}
-        <div>
-          <Card className="overflow-hidden border-2 border-amber-200">
-            {/* 商品圖片 */}
-            <div className="relative h-96">
-              <Image
-                src={product.image_url}
-                alt={product.name}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute top-4 left-4">
-                <Badge className="bg-amber-600 text-white">
-                  {story.emoji} {story.category}
-                </Badge>
-              </div>
-            </div>
+  useEffect(() => {
+    // 計算閱讀進度
+    const progress = ((currentChapter + 1) / story.chapters.length) * 100
+    setReadingProgress(progress)
+  }, [currentChapter, story.chapters.length])
 
-            {/* 商品信息 */}
-            <div className="p-6">
-              <h1 className="text-2xl font-bold text-amber-900 mb-2">
-                {product.name}
-              </h1>
-              
-              <div className="flex items-center space-x-4 mb-4 text-sm text-amber-600">
-                <div className="flex items-center">
-                  <Clock className="h-4 w-4 mr-1" />
-                  {story.readTime}
-                </div>
-                <div className="flex items-center">
-                  <Star className="h-4 w-4 mr-1 fill-current text-yellow-500" />
-                  {story.rating}
-                </div>
-              </div>
+  const handleChapterChange = (newChapter: number) => {
+    setCurrentChapter(newChapter)
+    setIsTypewriterMode(true)
+    setTimeout(() => setIsTypewriterMode(false), 3000)
+    
+    // 完成故事時顯示星星爆炸效果
+    if (newChapter === story.chapters.length - 1) {
+      setShowStarBurst(true)
+      setTimeout(() => setShowStarBurst(false), 2000)
+    }
+  }
 
-              <div className="text-3xl font-bold text-amber-900 mb-6">
-                {formatPrice(product.price_in_cents)}
-              </div>
-
-              {/* 操作按鈕 */}
-              <div className="flex space-x-3">
-                <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white">
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  加入收藏籃
-                </Button>
-                <Button variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50">
-                  <Heart className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50">
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* 右側：故事內容 */}
-        <div>
-          <Card className="border-2 border-amber-200 h-fit">
-            <div className="p-6">
-              {/* 故事標題 */}
-              <div className="flex items-center mb-4">
-                <BookOpen className="h-5 w-5 text-amber-600 mr-2" />
-                <h2 className="text-xl font-semibold text-amber-900">
+  // 全屏沉浸式故事閱讀模式
+  if (isFullscreen) {
+    return (
+      <div className="fixed inset-0 z-50 bg-gradient-to-b from-amber-900 via-amber-800 to-amber-900 overflow-y-auto">
+        {/* 背景效果 */}
+        <div className="absolute inset-0 texture-paper opacity-10" />
+        <FloatingParticles count={20} />
+        
+        {/* 頂部控制欄 */}
+        <div className="sticky top-0 z-10 bg-amber-900/80 backdrop-blur-sm border-b border-amber-600/30">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <MagicalButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsFullscreen(false)}
+                >
+                  <Minimize className="h-4 w-4 mr-2" />
+                  退出全屏
+                </MagicalButton>
+                
+                <div className="text-amber-100 font-serif">
+                  <Crown className="h-4 w-4 inline mr-2" />
                   {story.title}
-                </h2>
-              </div>
-
-              {/* 章節導航 */}
-              <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
-                {story.chapters.map((chapter, index) => (
-                  <Button
-                    key={index}
-                    variant={currentChapter === index ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentChapter(index)}
-                    className={
-                      currentChapter === index
-                        ? "bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap"
-                        : "border-amber-300 text-amber-700 hover:bg-amber-50 whitespace-nowrap"
-                    }
-                  >
-                    第{index + 1}章
-                  </Button>
-                ))}
-              </div>
-
-              {/* 章節內容 */}
-              <div className="bg-amber-50 rounded-lg p-6 min-h-[300px]">
-                <h3 className="text-lg font-medium text-amber-900 mb-4">
-                  {story.chapters[currentChapter].title}
-                </h3>
-                <div className="text-amber-800 leading-relaxed whitespace-pre-line">
-                  {story.chapters[currentChapter].content}
                 </div>
               </div>
-
-              {/* 章節導航 */}
-              <div className="flex justify-between mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentChapter(Math.max(0, currentChapter - 1))}
-                  disabled={currentChapter === 0}
-                  className="border-amber-300 text-amber-700 hover:bg-amber-50"
+              
+              <div className="flex items-center space-x-3">
+                <MagicalButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setSoundEnabled(!soundEnabled)}
                 >
-                  上一章
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentChapter(Math.min(story.chapters.length - 1, currentChapter + 1))}
-                  disabled={currentChapter === story.chapters.length - 1}
-                  className="border-amber-300 text-amber-700 hover:bg-amber-50"
-                >
-                  下一章
-                </Button>
+                  {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                </MagicalButton>
+                
+                <div className="text-amber-100 text-sm">
+                  第 {currentChapter + 1} / {story.chapters.length} 章
+                </div>
               </div>
             </div>
-          </Card>
+            
+            {/* 魔法卷軸進度條 */}
+            <div className="mt-2">
+              <ScrollProgress progress={readingProgress} />
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* 相關推薦 */}
-      <section className="mt-12">
-        <h3 className="text-2xl font-semibold text-amber-900 mb-6 text-center">
-          您可能也會喜歡的故事
-        </h3>
-        <div className="text-center py-8">
-          <div className="text-4xl mb-4">📚</div>
-          <p className="text-amber-700">更多精彩故事正在準備中...</p>
+        {/* 故事內容 */}
+        <div className="container mx-auto px-4 py-12 max-w-4xl">
+          <div className="parchment rounded-lg p-12 shadow-depth-3 min-h-[80vh] relative">
+            {/* 古典裝飾邊框 */}
+            <div className="absolute inset-4 border-2 border-amber-400/30 rounded-lg decorative-border opacity-50" />
+            
+            <div className="relative z-10">
+              {/* 章節標題 */}
+              <h2 className="text-3xl md:text-4xl font-bold text-amber-900 mb-8 text-center text-3d gold-foil">
+                {story.chapters[currentChapter].title}
+              </h2>
+              
+              {/* 故事內容 - 打字機效果 */}
+              <div className="text-lg md:text-xl text-amber-800 leading-relaxed font-serif space-y-6">
+                {isTypewriterMode ? (
+                  <TypewriterText 
+                    text={story.chapters[currentChapter].content}
+                    speed={30}
+                    className="whitespace-pre-line"
+                  />
+                ) : (
+                  <div className="whitespace-pre-line">
+                    {story.chapters[currentChapter].content}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* 底部章節導航 */}
+          <div className="flex justify-between items-center mt-8">
+            <MagicalButton
+              variant="secondary"
+              onClick={() => handleChapterChange(Math.max(0, currentChapter - 1))}
+              disabled={currentChapter === 0}
+            >
+              上一章
+            </MagicalButton>
+            
+            {/* 章節選擇 */}
+            <div className="flex space-x-2">
+              {story.chapters.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleChapterChange(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    index === currentChapter 
+                      ? 'bg-amber-400 glow-amber' 
+                      : index < currentChapter 
+                        ? 'bg-amber-600' 
+                        : 'bg-amber-200'
+                  }`}
+                />
+              ))}
+            </div>
+            
+            <MagicalButton
+              variant="secondary"
+              onClick={() => handleChapterChange(Math.min(story.chapters.length - 1, currentChapter + 1))}
+              disabled={currentChapter === story.chapters.length - 1}
+            >
+              下一章
+            </MagicalButton>
+          </div>
+        </div>
+        
+        {/* 星星爆炸效果 */}
+        <StarBurstEffect trigger={showStarBurst} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative">
+      {/* 背景效果 */}
+      <div className="absolute inset-0 texture-paper opacity-5" />
+      
+      <div className="container mx-auto px-4 py-8 max-w-6xl relative">
+        {/* 返回按鈕 */}
+        <div className="mb-8">
           <Link href="/products">
-            <Button className="mt-4 bg-amber-600 hover:bg-amber-700 text-white">
-              探索更多故事
-            </Button>
+            <MagicalButton variant="secondary">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              返回魔法商店
+            </MagicalButton>
           </Link>
         </div>
-      </section>
+
+        {/* 進度指示 */}
+        <div className="mb-6">
+          <ScrollProgress progress={readingProgress} className="max-w-md mx-auto" />
+          <p className="text-center text-amber-700 mt-2 font-serif">
+            故事進度 {Math.round(readingProgress)}%
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* 左側：商品展示 - 增強版 */}
+          <div className="space-y-6">
+            {/* 主要商品卡片 */}
+            <Card className="overflow-hidden shadow-depth-3 border-2 border-amber-300 texture-leather">
+              {/* 商品圖片 - 魔法增強 */}
+              <div className="relative h-96 overflow-hidden">
+                <Image
+                  src={product.image_url}
+                  alt={product.name}
+                  fill
+                  className="object-cover hover:scale-110 transition-transform duration-700"
+                />
+                {/* 魔法覆蓋層 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-amber-200/20" />
+                
+                {/* 故事分類標籤 */}
+                <div className="absolute top-4 left-4">
+                  <Badge className="bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-depth-1 px-4 py-2">
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    {story.emoji} {story.category}
+                  </Badge>
+                </div>
+                
+                {/* 全屏閱讀按鈕 */}
+                <div className="absolute top-4 right-4">
+                  <MagicalButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setIsFullscreen(true)}
+                    glowing={true}
+                  >
+                    <Maximize className="h-4 w-4 mr-2" />
+                    沉浸閱讀
+                  </MagicalButton>
+                </div>
+              </div>
+
+              {/* 商品信息 - 羊皮紙風格 */}
+              <div className="p-8 parchment">
+                <h1 className="text-3xl font-bold text-amber-900 mb-4 text-3d">
+                  {product.name}
+                </h1>
+                
+                <div className="flex items-center space-x-6 mb-6 text-amber-600">
+                  <div className="flex items-center bg-amber-50 px-3 py-2 rounded-full">
+                    <Clock className="h-4 w-4 mr-2" />
+                    <span className="font-serif">{story.readTime}</span>
+                  </div>
+                  <div className="flex items-center bg-yellow-50 px-3 py-2 rounded-full">
+                    <Star className="h-4 w-4 mr-2 fill-current text-yellow-500" />
+                    <span className="font-serif">{story.rating}</span>
+                  </div>
+                </div>
+
+                {/* 價格標籤 - 古典書籤 */}
+                <div className="relative mb-8">
+                  <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-6 py-3 text-2xl font-bold shadow-depth-2 transform -rotate-2 inline-block">
+                    {formatPrice(product.price_in_cents)}
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-amber-800" />
+                  </div>
+                </div>
+
+                {/* 魔法操作按鈕 */}
+                <div className="grid grid-cols-1 gap-4">
+                  <MagicalButton
+                    variant="primary"
+                    size="lg"
+                    glowing={true}
+                    breathing={true}
+                    className="w-full"
+                  >
+                    <ShoppingCart className="h-5 w-5 mr-3" />
+                    加入魔法收藏籃
+                    <Gem className="h-5 w-5 ml-3" />
+                  </MagicalButton>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <MagicalButton variant="secondary" className="flex-1">
+                      <Heart className="h-4 w-4 mr-2" />
+                      珍藏
+                    </MagicalButton>
+                    <MagicalButton variant="secondary" className="flex-1">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      分享故事
+                    </MagicalButton>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* 右側：故事閱讀區 - 魔法增強版 */}
+          <div className="space-y-6">
+            <Card className="shadow-depth-3 border-2 border-amber-300">
+              <div className="p-8 parchment">
+                {/* 故事標題 */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center">
+                    <BookOpen className="h-6 w-6 text-amber-600 mr-3 breathing" />
+                    <h2 className="text-2xl font-bold text-amber-900 gold-foil">
+                      {story.title}
+                    </h2>
+                  </div>
+                  <MagicalButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setIsFullscreen(true)}
+                  >
+                    <Maximize className="h-4 w-4" />
+                  </MagicalButton>
+                </div>
+
+                {/* 章節導航 - 魔法版 */}
+                <div className="flex space-x-3 mb-8 overflow-x-auto pb-2">
+                  {story.chapters.map((chapter, index) => (
+                    <MagicalButton
+                      key={index}
+                      variant={currentChapter === index ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => handleChapterChange(index)}
+                      glowing={currentChapter === index}
+                      className="whitespace-nowrap"
+                    >
+                      第{index + 1}章
+                      {index <= currentChapter && (
+                        <Crown className="h-3 w-3 ml-2" />
+                      )}
+                    </MagicalButton>
+                  ))}
+                </div>
+
+                {/* 章節內容 - 羊皮紙風格 */}
+                <div className="parchment rounded-lg p-6 min-h-[400px] shadow-depth-1 relative">
+                  {/* 古典裝飾 */}
+                  <div className="absolute top-2 left-2 w-8 h-8 border-l-2 border-t-2 border-amber-400/40" />
+                  <div className="absolute top-2 right-2 w-8 h-8 border-r-2 border-t-2 border-amber-400/40" />
+                  <div className="absolute bottom-2 left-2 w-8 h-8 border-l-2 border-b-2 border-amber-400/40" />
+                  <div className="absolute bottom-2 right-2 w-8 h-8 border-r-2 border-b-2 border-amber-400/40" />
+                  
+                  <h3 className="text-xl font-bold text-amber-900 mb-6 text-center text-3d">
+                    {story.chapters[currentChapter].title}
+                  </h3>
+                  
+                  <div className="text-amber-800 leading-relaxed font-serif text-lg space-y-4">
+                    {isTypewriterMode ? (
+                      <TypewriterText 
+                        text={story.chapters[currentChapter].content}
+                        speed={50}
+                        className="whitespace-pre-line"
+                      />
+                    ) : (
+                      <div className="whitespace-pre-line">
+                        {story.chapters[currentChapter].content}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 章節導航控制 */}
+                <div className="flex justify-between items-center mt-8">
+                  <MagicalButton
+                    variant="secondary"
+                    onClick={() => handleChapterChange(Math.max(0, currentChapter - 1))}
+                    disabled={currentChapter === 0}
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    上一章
+                  </MagicalButton>
+                  
+                  <div className="text-center">
+                    <div className="text-amber-700 font-serif text-sm mb-2">
+                      第 {currentChapter + 1} / {story.chapters.length} 章
+                    </div>
+                    <div className="flex space-x-1">
+                      {story.chapters.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentChapter 
+                              ? 'bg-amber-500 glow-amber' 
+                              : index < currentChapter 
+                                ? 'bg-amber-400' 
+                                : 'bg-amber-200'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <MagicalButton
+                    variant="secondary"
+                    onClick={() => handleChapterChange(Math.min(story.chapters.length - 1, currentChapter + 1))}
+                    disabled={currentChapter === story.chapters.length - 1}
+                  >
+                    下一章
+                    <ArrowLeft className="h-4 w-4 ml-2 rotate-180" />
+                  </MagicalButton>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* 相關推薦 - 魔法版 */}
+        <section className="mt-20">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-amber-900 mb-4 text-3d">
+              您可能也會喜歡的魔法故事
+            </h3>
+            <div className="flex justify-center space-x-4 opacity-60">
+              <Star className="h-6 w-6 text-amber-500 animate-spin" />
+              <Gem className="h-6 w-6 text-amber-600 animate-bounce" />
+              <Crown className="h-6 w-6 text-amber-500 animate-pulse" />
+              <Sparkles className="h-6 w-6 text-amber-600 animate-spin" style={{ animationDirection: 'reverse' }} />
+            </div>
+          </div>
+          
+          <Card className="parchment p-12 text-center shadow-depth-2">
+            <div className="text-6xl mb-6">📚✨</div>
+            <p className="text-xl text-amber-700 font-serif mb-6 leading-relaxed">
+              更多令人著迷的魔法故事正在我們的魔法工坊中精心編織...
+              <br />
+              每一個故事都將帶您踏上全新的奇幻冒險之旅
+            </p>
+            <Link href="/products">
+              <MagicalButton
+                variant="primary"
+                size="lg"
+                glowing={true}
+                className="px-10 py-4"
+              >
+                <BookOpen className="h-5 w-5 mr-2" />
+                探索更多魔法珍寶
+                <Sparkles className="h-5 w-5 ml-2" />
+              </MagicalButton>
+            </Link>
+          </Card>
+        </section>
+        
+        {/* 星星爆炸效果 */}
+        <StarBurstEffect trigger={showStarBurst} />
+      </div>
     </div>
   )
 }

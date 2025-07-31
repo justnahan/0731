@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Heart, Clock, Star, BookOpen } from 'lucide-react'
+import { BookCardWrapper, MagicalButton } from '@/components/magical-effects'
+import { Heart, Clock, Star, BookOpen, Sparkles } from 'lucide-react'
 
 interface Product {
   id: number
@@ -74,85 +74,113 @@ export function ProductStoryGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {products.map((product) => {
         const storyTheme = getStoryTheme(product.id)
         
         return (
-          <Card key={product.id} className="group relative overflow-hidden bg-white border-2 border-amber-200 hover:border-amber-400 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            {/* 故事分類標籤 */}
-            <div className="absolute top-3 left-3 z-10">
-              <Badge className="bg-amber-600 text-white hover:bg-amber-700">
-                {storyTheme.emoji} {storyTheme.category}
-              </Badge>
-            </div>
+          <BookCardWrapper key={product.id} className="group">
+            <Card className="relative overflow-hidden bg-white shadow-depth-2 hover:shadow-depth-3 transition-all duration-500 transform hover:-translate-y-2 texture-paper">
+              {/* 魔法光暈效果 */}
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 via-transparent to-amber-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* 燙金裝飾邊框 */}
+              <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 opacity-0 group-hover:opacity-30 transition-opacity duration-500 rounded-lg" style={{ padding: '2px' }}>
+                <div className="w-full h-full bg-white rounded-lg" />
+              </div>
 
-            {/* 收藏按鈕 */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute top-3 right-3 z-10 bg-white/80 hover:bg-white text-amber-700 hover:text-red-500 transition-colors"
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
+              {/* 故事分類標籤 - 增強版 */}
+              <div className="absolute top-4 left-4 z-20">
+                <Badge className="bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-depth-1 gold-foil border-amber-400 px-3 py-1 text-sm font-semibold">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  {storyTheme.emoji} {storyTheme.category}
+                </Badge>
+              </div>
 
-            {/* 商品圖片 */}
-            <div className="relative h-48 overflow-hidden">
-              <Image
-                src={product.image_url}
-                alt={product.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
-            {/* 故事內容 */}
-            <div className="p-6">
-              {/* 故事標題 */}
-              <h3 className="text-lg font-semibold text-amber-900 mb-2 line-clamp-1">
-                {storyTheme.storyTitle}
-              </h3>
-
-              {/* 商品名稱 */}
-              <h4 className="text-md font-medium text-amber-800 mb-3">
-                {product.name}
-              </h4>
-
-              {/* 故事摘要 */}
-              <p className="text-sm text-amber-700 mb-4 line-clamp-2">
-                {storyTheme.storyExcerpt}
-              </p>
-
-              {/* 故事信息 */}
-              <div className="flex items-center space-x-4 mb-4 text-xs text-amber-600">
-                <div className="flex items-center">
-                  <Clock className="h-3 w-3 mr-1" />
-                  {storyTheme.readTime}
-                </div>
-                <div className="flex items-center">
-                  <Star className="h-3 w-3 mr-1 fill-current text-yellow-500" />
-                  {storyTheme.rating}
+              {/* 收藏按鈕 - 魔法版 */}
+              <div className="absolute top-4 right-4 z-20">
+                <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-depth-1 hover:shadow-depth-2 transition-all duration-300 hover:scale-110 glow-amber">
+                  <Heart className="h-4 w-4 text-amber-700 hover:text-red-500 transition-colors cursor-pointer" />
                 </div>
               </div>
 
-              {/* 價格和操作 */}
-              <div className="flex items-center justify-between">
-                <div className="text-xl font-bold text-amber-900">
+              {/* 商品圖片 - 增強版 */}
+              <div className="relative h-52 overflow-hidden rounded-t-lg">
+                <Image
+                  src={product.image_url}
+                  alt={product.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                {/* 魔法覆蓋層 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-amber-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* 古典裝飾角落 */}
+                <div className="absolute top-2 left-2 w-6 h-6 border-l-2 border-t-2 border-amber-400/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute top-2 right-2 w-6 h-6 border-r-2 border-t-2 border-amber-400/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-2 left-2 w-6 h-6 border-l-2 border-b-2 border-amber-400/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2 border-amber-400/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+
+              {/* 故事內容 - 羊皮紙質感 */}
+              <div className="p-6 parchment relative">
+                {/* 故事標題 - 3D效果 */}
+                <h3 className="text-xl font-bold text-amber-900 mb-3 line-clamp-1 text-3d">
+                  {storyTheme.storyTitle}
+                </h3>
+
+                {/* 商品名稱 - 燙金效果 */}
+                <h4 className="text-lg font-semibold mb-3 gold-foil">
+                  {product.name}
+                </h4>
+
+                {/* 故事摘要 - 優雅字體 */}
+                <p className="text-sm text-amber-800 mb-5 line-clamp-3 leading-relaxed font-serif">
+                  {storyTheme.storyExcerpt}
+                </p>
+
+                {/* 故事信息 - 增強版 */}
+                <div className="flex items-center justify-between mb-5 text-xs">
+                  <div className="flex items-center space-x-4 text-amber-600">
+                    <div className="flex items-center bg-amber-50 px-2 py-1 rounded-full">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {storyTheme.readTime}
+                    </div>
+                    <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3 mr-1 fill-current text-yellow-500" />
+                      {storyTheme.rating}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 價格標籤 - 古典書籤樣式 */}
+                <div className="absolute -right-2 top-20 bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-2 text-lg font-bold shadow-depth-2 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-amber-800" />
                   {formatPrice(product.price_in_cents)}
                 </div>
-                <Link href={`/products/${product.id}`}>
-                  <Button className="bg-amber-600 hover:bg-amber-700 text-white">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    閱讀故事
-                  </Button>
-                </Link>
-              </div>
-            </div>
 
-            {/* 書頁效果 */}
-            <div className="absolute bottom-0 right-0 w-6 h-6 bg-amber-100 transform rotate-45 translate-x-3 translate-y-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </Card>
+                {/* 操作按鈕 */}
+                <div className="flex justify-center mt-4">
+                  <Link href={`/products/${product.id}`}>
+                    <MagicalButton
+                      variant="primary"
+                      size="md"
+                      glowing={true}
+                      className="group-hover:breathing"
+                    >
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      開始閱讀故事
+                      <Sparkles className="h-4 w-4 ml-2 group-hover:animate-spin" />
+                    </MagicalButton>
+                  </Link>
+                </div>
+              </div>
+
+              {/* 古典書頁捲曲效果 */}
+              <div className="absolute bottom-0 right-0 w-8 h-8 bg-gradient-to-br from-amber-100 to-amber-200 transform rotate-45 translate-x-4 translate-y-4 opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-depth-1" />
+              <div className="absolute bottom-2 right-2 w-4 h-4 bg-gradient-to-br from-amber-200 to-amber-300 transform rotate-45 opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+            </Card>
+          </BookCardWrapper>
         )
       })}
     </div>
