@@ -64,8 +64,8 @@ export default function Home() {
                 </div>
               </div>
               
-              {/* 3D立體標題 */}
-              <h1 className="text-5xl md:text-8xl font-bold text-amber-900 mb-4 text-3d gold-foil">
+              {/* 漸變標題 */}
+              <h1 className="text-5xl md:text-8xl font-bold mb-4 text-gradient">
                 故事驅動商店
               </h1>
               
@@ -143,14 +143,14 @@ export default function Home() {
           {/* 魔法統計數據 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="parchment p-6 rounded-lg shadow-depth-2 text-center transform hover:scale-105 transition-all duration-300">
-              <div className="text-4xl font-bold text-amber-900 mb-2 text-3d">100+</div>
+              <div className="text-4xl font-bold mb-2 text-gradient">100+</div>
               <div className="text-amber-700 font-serif">精彩魔法故事</div>
               <div className="mt-2">
                 <Book className="h-6 w-6 text-amber-600 mx-auto animate-bounce" />
               </div>
             </div>
             <div className="parchment p-6 rounded-lg shadow-depth-2 text-center transform hover:scale-105 transition-all duration-300">
-              <div className="text-4xl font-bold text-amber-900 mb-2 text-3d">1000+</div>
+              <div className="text-4xl font-bold mb-2 text-gradient">1000+</div>
               <div className="text-amber-700 font-serif">故事冒險旅人</div>
               <div className="mt-2">
                 <Crown className="h-6 w-6 text-amber-600 mx-auto animate-pulse" />
@@ -159,7 +159,7 @@ export default function Home() {
             <div className="parchment p-6 rounded-lg shadow-depth-2 text-center transform hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-center mb-2">
                 <Star className="h-8 w-8 text-yellow-500 fill-current mr-2 animate-spin" />
-                <span className="text-4xl font-bold text-amber-900 text-3d">4.8</span>
+                <span className="text-4xl font-bold text-gradient">4.8</span>
               </div>
               <div className="text-amber-700 font-serif">魔法體驗評分</div>
             </div>
@@ -176,7 +176,7 @@ export default function Home() {
         <div className="absolute inset-0 texture-paper opacity-20" />
         
         <div className="text-center mb-16 relative">
-          <h2 className="text-4xl md:text-5xl font-bold text-amber-900 mb-6 text-3d">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gradient">
             魔法故事分類
           </h2>
           <p className="text-xl text-amber-700 max-w-3xl mx-auto font-serif leading-relaxed">
@@ -199,7 +199,7 @@ export default function Home() {
               
               <div className="p-8 text-center relative z-10">
                 <div className="text-6xl mb-6 group-hover:scale-125 transition-transform duration-500 filter drop-shadow-lg">🏰</div>
-                <h3 className="text-2xl font-bold text-purple-900 mb-3 gold-foil">奇幻世界</h3>
+                <h3 className="text-2xl font-bold text-purple-900 mb-3 text-stroke">奇幻世界</h3>
                 <p className="text-purple-700 text-sm mb-6 font-serif leading-relaxed">
                   龍族傳說、魔法學院、
                   <br />
@@ -227,7 +227,7 @@ export default function Home() {
               
               <div className="p-8 text-center relative z-10">
                 <div className="text-6xl mb-6 group-hover:scale-125 transition-transform duration-500 filter drop-shadow-lg">🏙️</div>
-                <h3 className="text-2xl font-bold text-blue-900 mb-3 gold-foil">現代生活</h3>
+                <h3 className="text-2xl font-bold text-blue-900 mb-3 text-stroke">現代生活</h3>
                 <p className="text-blue-700 text-sm mb-6 font-serif leading-relaxed">
                   都市傳說、咖啡館邂逅、
                   <br />
@@ -253,7 +253,7 @@ export default function Home() {
               
               <div className="p-8 text-center relative z-10">
                 <div className="text-6xl mb-6 group-hover:scale-125 transition-transform duration-500 filter drop-shadow-lg">📻</div>
-                <h3 className="text-2xl font-bold text-amber-900 mb-3 gold-foil">復古懷舊</h3>
+                <h3 className="text-2xl font-bold text-amber-900 mb-3 text-stroke">復古懷舊</h3>
                 <p className="text-amber-700 text-sm mb-6 font-serif leading-relaxed">
                   黃金年代、老唱片、
                   <br />
@@ -280,7 +280,7 @@ export default function Home() {
               
               <div className="p-8 text-center relative z-10">
                 <div className="text-6xl mb-6 group-hover:scale-125 transition-transform duration-500 filter drop-shadow-lg">🚀</div>
-                <h3 className="text-2xl font-bold text-cyan-900 mb-3 gold-foil">科幻未來</h3>
+                <h3 className="text-2xl font-bold text-cyan-900 mb-3 text-stroke">科幻未來</h3>
                 <p className="text-cyan-700 text-sm mb-6 font-serif leading-relaxed">
                   星際旅行、AI智慧、
                   <br />
@@ -319,7 +319,7 @@ export default function Home() {
         
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 relative">
-            <h2 className="text-4xl md:text-5xl font-bold text-amber-900 mb-6 text-3d">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gradient">
               精選魔法珍寶
             </h2>
             <p className="text-xl text-amber-700 max-w-3xl mx-auto font-serif leading-relaxed">
@@ -381,7 +381,7 @@ export default function Home() {
               </div>
               
               {/* 標題 */}
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-amber-900 text-3d">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gradient">
                 開啟您的魔法傳奇
               </h2>
               

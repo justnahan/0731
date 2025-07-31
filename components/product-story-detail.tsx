@@ -216,7 +216,7 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
             
             <div className="relative z-10">
               {/* 章節標題 */}
-              <h2 className="text-3xl md:text-4xl font-bold text-amber-900 mb-8 text-center text-3d gold-foil">
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-gradient">
                 {story.chapters[currentChapter].title}
               </h2>
               
@@ -344,7 +344,7 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
 
               {/* 商品信息 - 羊皮紙風格 */}
               <div className="p-8 parchment">
-                <h1 className="text-3xl font-bold text-amber-900 mb-4 text-3d">
+                <h1 className="text-3xl font-bold text-amber-900 mb-4 text-stroke">
                   {product.name}
                 </h1>
                 
@@ -444,7 +444,7 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
                   <div className="absolute bottom-2 left-2 w-8 h-8 border-l-2 border-b-2 border-amber-400/40" />
                   <div className="absolute bottom-2 right-2 w-8 h-8 border-r-2 border-b-2 border-amber-400/40" />
                   
-                  <h3 className="text-xl font-bold text-amber-900 mb-6 text-center text-3d">
+                  <h3 className="text-xl font-bold text-amber-900 mb-6 text-center text-stroke">
                     {story.chapters[currentChapter].title}
                   </h3>
                   
@@ -511,7 +511,7 @@ export function ProductStoryDetail({ product }: ProductStoryDetailProps) {
         {/* 相關推薦 - 魔法版 */}
         <section className="mt-20">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-amber-900 mb-4 text-3d">
+            <h3 className="text-3xl font-bold mb-4 text-gradient">
               您可能也會喜歡的魔法故事
             </h3>
             <div className="flex justify-center space-x-4 opacity-60">

@@ -341,14 +341,32 @@
     }
   }
 
-  /* 3D 立體文字 */
-  .text-3d {
-    text-shadow: 
-      0 1px 0 #654321,
-      0 2px 0 #5d4037,
-      0 3px 0 #4e342e,
-      0 4px 0 #3e2723,
-      0 5px 10px rgba(0,0,0,0.3);
+  /* 專業漸變文字 */
+  .text-gradient {
+    background: linear-gradient(135deg, #8B4513, #DAA520, #CD853F);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+  
+  /* 精緻描邊文字 */
+  .text-stroke {
+    -webkit-text-stroke: 0.5px #8B4513;
+    text-stroke: 0.5px #8B4513;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  
+  /* 高對比文字 */
+  .text-premium {
+    color: #5D4037;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   /* 古典裝飾花紋 */
@@ -399,11 +417,18 @@
         0 8px 16px rgba(139, 69, 19, 0.1);
     }
     
-    .text-3d {
-      text-shadow: 
-        0 1px 0 #654321,
-        0 2px 0 #5d4037,
-        0 3px 5px rgba(0,0,0,0.2);
+    .text-gradient {
+      background: linear-gradient(135deg, #8B4513, #DAA520);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+    
+    .text-stroke {
+      -webkit-text-stroke: 0.3px #8B4513;
+      text-stroke: 0.3px #8B4513;
+      font-weight: 600;
     }
     
     .glow-amber {

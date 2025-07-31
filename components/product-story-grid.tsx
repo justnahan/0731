@@ -124,8 +124,8 @@ export function ProductStoryGrid() {
 
               {/* 故事內容 - 羊皮紙質感 */}
               <div className="p-6 parchment relative">
-                {/* 故事標題 - 3D效果 */}
-                <h3 className="text-xl font-bold text-amber-900 mb-3 line-clamp-1 text-3d">
+                {/* 故事標題 - 專業效果 */}
+                <h3 className="text-xl font-bold text-amber-900 mb-3 line-clamp-1 text-stroke">
                   {storyTheme.storyTitle}
                 </h3>
 
